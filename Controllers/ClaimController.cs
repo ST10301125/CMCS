@@ -15,7 +15,6 @@ namespace CMCS.Controllers
         {
             _context = context;
         }
-
         public IActionResult Index()
         {
             var claims = _context.Claims.ToList();
