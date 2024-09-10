@@ -1,0 +1,31 @@
+﻿@model IEnumerable<CMCS.Models.ClaimApproval>
+
+<h2>Approve Claims</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Claim Number</th>
+            <th>Lecturer Name</th>
+            <th>Date Submitted</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                <td>@claim.ClaimNumber</td>
+                <td>@claim.LecturerName</td>
+                <td>@claim.DateSubmitted.ToString("dd/MM/yyyy")</td>
+                <td>@claim.Status</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@claim.ClaimId" class="btn btn-info">View</a>
+                    <a asp-action="Approve" asp-route-id="@claim.ClaimId" class="btn btn-success">Approve</a>
+                    <a asp-action="Reject" asp-route-id="@claim.ClaimId" class="btn btn-danger">Reject</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

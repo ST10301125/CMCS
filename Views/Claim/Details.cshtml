@@ -1,0 +1,22 @@
+﻿@model CMCS.Models.ClaimDetail
+
+<h2>Claim Details</h2>
+
+<p><strong>Lecturer Name:</strong> @Model.LecturerName</p>
+<p><strong>Claim Number:</strong> @Model.ClaimNumber</p>
+<p><strong>Date Submitted:</strong> @Model.DateSubmitted.ToString("dd/MM/yyyy")</p>
+<p><strong>Description:</strong> @Model.Description</p>
+<p><strong>Status:</strong> @Model.Status</p>
+
+@if (Model.SupportingDocumentPath != null)
+{
+    <p><strong>Supporting Document:</strong> <a href="@Url.Content(Model.SupportingDocumentPath)">View Document</a></p>
+}
+
+<form asp-action="Approve" asp-route-id="@Model.ClaimId" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-success">Approve</button>
+</form>
+<form asp-action="Reject" asp-route-id="@Model.ClaimId" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-danger">Reject</button>
+</form>
+<a asp-action="Approve" class="btn btn-secondary">Back to List</a>

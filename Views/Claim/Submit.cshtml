@@ -1,0 +1,52 @@
+﻿@model CMCS.Models.Claim
+
+@{
+    ViewData["Title"] = "Submit a New Claim";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Submit" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Month" class="control-label"></label>
+        <input asp-for="Month" class="form-control" />
+        <span asp-validation-for="Month" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Year" class="control-label"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="HoursWorked" class="control-label"></label>
+        <input asp-for="HoursWorked" class="form-control" />
+        <span asp-validation-for="HoursWorked" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TotalAmount" class="control-label"></label>
+        <input asp-for="TotalAmount" class="form-control" />
+        <span asp-validation-for="TotalAmount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status" class="control-label"></label>
+        <input asp-for="Status" class="form-control" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ContractID" class="control-label"></label>
+        <input asp-for="ContractID" class="form-control" />
+        <span asp-validation-for="ContractID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="SupportingDocs">Supporting Documents</label>
+        <input type="file" name="SupportingDocs" id="SupportingDocs" multiple />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
