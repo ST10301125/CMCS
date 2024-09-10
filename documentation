@@ -1,0 +1,183 @@
+Emma Jae Dunn
+ST10301125
+
+POE PART 1
+PROG6212
+
+1.	Documentation
+
+Design:
+
+When designing the Contract Monthly Claim System each design will impact the apps functionality, scalability and experience the user will receive. 
+
+The application will be developed in .NET Core for the GUI user interface, with the Model View Controller being used for the web-based solutions. .NET Core offers a strong foundation with integrated web services, security and system integration capabilities. .NET Core will help with the calculations, data validation and even uploading documents. .NET Core can run on multiple operating system, which allows flexibility. The system also has scalability as it provides a modular architecture, which can be integrated with new features without affecting the core system. 
+
+The Model View Controller app will allow users to access the system through an online connection which gives users more flexibility, this should provide accessible, user-friendly interface for submissions and real-time tracking and processes. The MVC is more scalable in web applications, which will help accommodate more users while the systems expands. It will be able to introduce new features without disrupting the overall architecture. 
+
+Database Structure: 
+
+The database structure used is relational database, like the SQL server which ensures integrity across tables. This is crucial for maintaining relationships between entities like contracts, payments and claims. SQL databases also allow complexed queries, this is crucial for generating reports, tracking statuses for claims and handling payments and transactions. SQL server is able to handle large amounts of data efficiently and it also supports increasing the server capacity, with this also comes distributing data across multiple databases. This is vital as the system will grow and produce more lecturers, contracts and claims. 
+
+The contracts table represents each lectures contract including the distribution, hourly rate and other essential details. Contacts are crucial as they determine the terms where the claims are calculated. 
+
+The claim table is bought in to a specific contract, which reflects the amount of time the lecture has worked in the month allocated. Claims should track the amounts that has been claimed and the statuses of the claims. 
+
+The payment table is used to keep track when and how much was paid for each of the claims. This makes sure that the financial data remains consistent and correct. 
+
+The user table stores all the users personal data including the position they are in and the role they play. This will ensure who will have authorisation and be able to approve and submit claims. 
+
+The database will. Be normalized as there is no redundant data and the relationships between the tables are clearly defined.
+
+One-to-Many: A Lecturer may have more than one Contract, as represented by a user in the system.
+One-to-Many: A contract may be linked to more than one claim.
+One-to-Many: A claim may be eligible for more than one payment.
+One-to-Many: For attachments such as work logs, each claim may contain more than one supporting document.
+
+GUI Layout and User Experience:
+
+User roles and permissions: 
+
+Access permissions and user interfaces will change depending on the role in. the operation. Professors should only be able to submit while the manager has the authority to accept/reject claims. 
+
+Uploading a document:
+
+This is for document management which is a crucial part for the application. This should make sure all the necessary information is uploaded before the submission, the interface should be simples and accessible for user to upload and preview the documents.
+
+Error handling and validation: 
+
+The GUI will validate all the inputs from permitting the submission in order to reduce the number of claims that get rejected. It should be able to guarantee all necessary fields are completed and that that all the documents are formatted correctly.
+
+Lecture:
+
+Claim submission interface that’s main goal is to make it simple for the professor to submit claims. This will produce the information about the submission. Totals will also be automatically calculated based on the number of hours performed. Simple methods also will be used for uploading any files and documents.
+
+Claim submission workflow is the system that should lead the instructor through each step of the procedure in a ordered manner. They will need to choose the agreement they want then input the months worked hours, then upload any files like a timesheet, then submit the claim. 
+
+Manager:
+
+Claim review and approval is the system that will show claims that need to be looked at by the academic manager and coordinator. Claims can only be accepted or rejected with comments and a n update should proceed to the claims status. 
+
+Reports will be created once they have been approved, pending or denied using the GUI. The reports can be exported into a different format for processing. 
+
+Assumptions:
+
+Lecturers should be limited to submitting a single claim per month. This will guarantee that assertions are not repeated while also streamlining the design. Fixed contract terms should also be implemented for the hourly rate and start/end dates of a contract don’t change regularly, The contract table will then be able to contain the details statically.
+
+Constraints:
+
+The performance, even when scaled should accommodate many campuses or departments. The system should manage a moderate volume or users and claims in an efficient manner. The security is important like encrypting and role based access control to prevent unwanted access to sensitive financial data found in contracts, payments and claims.
+
+
+2.	UML Class Diagram for Databases
+
+ 
+Relationships for Contract Monthly Claim System:
+
+User:
+One-to-Many: A user (lecturer) can have multiple contracts, but each contract belongs to one user.
+
+Contract:
+One-to-Many: A contract can have multiple claims, but each claim is linked to a single contract.
+
+SupportingDocs:
+One-to-Many: A claim can have multiple supporting documents, but each document belongs to one claim.
+
+Claim:
+One-to-One: Each claim has one approval, and each approval corresponds to one claim.
+
+Approved:
+Many-to-One: Many approvals can be made by a user (programme coordinator or academic manager), but each approval is associated with one claim.
+ 
+3.	Project Plan
+
+This project aims to develop a prototype of the contract monthly claim system to track the process of submitting and accepting the monthly claims. 
+
+The objectives in which the project should follow is first creating a functional GUI using .NET Core, then implementing the core logic for complexed calculations and handling documents. This should them help with designing and integrating a database schema, then ensure that the users roles and permissions are tasked correctly and that they are properly managed. 
+
+Task 1 – Planning and Analysis 
+
+1.1)	This phase you would need to gather the requirements and determine the projects goals. This can be achieved by making a requirement specification document. 
+
+Duration: 1 week
+
+1.2)	This phase is where the technology section happens and the feasible study workload. This can be achieved by creating a technology stack decision.
+
+Duration: 1 week
+
+1.3)	This phase is where you will create the project plan which will presents all the goals and the aim of the project. This can be achieved by writing out a project plan or using a template.
+
+Duration: 5 days
+
+Task 2 – Design
+
+2.1)	This phase will consist of creating a UML class diagram or a ERD diagram to show a visual representation of the classes, attributes and relationships. You can use a UML class diagram template to achieve this. 
+
+Duration: 3 days
+
+2.2)	This phase will consist of creating another visual element which will be the database schema design. To achieve the design you can use a document or a template.
+
+Duration: 3 days
+
+2.3) 	This phase consist of creating GUI examples and prototypes to get a feel of how the interface will look, this should give a good idea of the visual representation the user will see. This can be done by using GUI wireframes
+
+Duration: 5 days
+
+Task 3 – Development 
+
+3.1)	This phase includes using .NET Core and creating the actual code and functionality of the app. This should be done by hard coding and following the steps on what the app requires. 
+
+Duration: 2 weeks
+
+3.2)	This phase should be creating the GUI, this happens after the hard coding and once the app is functioning. To achieve this they need create a GUI interface and insert code that is going to make the app user friendly.
+
+Duration: 2 weeks
+
+3.3)	This phase is where you need to integrate the database and insert the information. Into the tables in order to organise it and get a formatted view and to see specifically all the claims and information regarding it. 
+
+Duration: 1 week
+
+3.4)	This phase will; be implementing user roles and permissions and by achieving this you would need to use a user management system that will track roles and authorize them to their positions. 
+
+Duration: 1 week
+
+Task 4 – Testing 
+
+4.1)	This phase requires unit testing and this is done once the code is finished and you are ready to input data to check if the code is functioning the way it should. 
+
+Duration: 3 days 
+
+4.2)	This phase is also done by testing this is integration testing which is putting the code in a software in which the different units and components of the application is tested as a combined entity. 
+
+Duration: 4 days
+
+Task 5 – Deployment and Documentation
+
+5.1)	 This phase will include finalizing the documentation making sure it is ready to be used and its functioning the right way, this is the final phase in making sure the application is running smoothly.
+
+Duration: 1 week
+
+5.2)	This phase is deployment and this is done by deploying the protype and making the application effective. People may start using it and processing the application. 
+
+Duration: 1 week
+
+Task 6 – Maintenance 
+
+6.1) 	This phase is the every crucial, maintain the app will keep it running the way it should and fix any problems the application may have. This can be done after the first few customers test the app out, and should be continuous after that. 
+
+Duration: Continuous 
+
+6.2) 	This phase is updating, this is also important making sure the app has the latest software and stays up to date with the latest software and fixes any bugs and problems that come with installation of new software.
+
+Duration: Continuous
+
+This project should be worked on for approximately 40 hours a week and should be full time commitment if you would like to complete it in a month. The more time spent on it not only the quicker it will be ready , but the more effective and well put together it will be. 
+
+Total days spent on project: 93 days  
+
+•	Planning and analysis –19 days
+•	Design – 11 days  
+•	Development – 6 weeks 
+•	Testing – 7 days
+•	Deployment and documentation – 2 weeks
+•	Maintenance – Continuous 
+ 
