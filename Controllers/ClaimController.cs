@@ -83,6 +83,7 @@ namespace CMCS.Controllers
         }
 
         // UploadDocument
+
         [HttpPost]
         public async Task<IActionResult> UploadDocument(int claimId, IFormFile file)
         {
