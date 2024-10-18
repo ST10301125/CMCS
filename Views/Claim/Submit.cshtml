@@ -1,52 +1,38 @@
 ﻿@model CMCS.Models.Claim
 
-@{
-    ViewData["Title"] = "Submit a New Claim";
+<div class="claim-form">
+    <h2 style="color: #ff0000;">Submit Your Claim</h2> 
+    <form asp-action="SubmitClaim" asp-controller="ClaimController" method="post" enctype="multipart/form-data" style="background-color: #fff; padding: 20px; border-radius: 8px;">
+        <div class="form-group">
+            <label for="HoursWorked" style="color: #ff0000;">Hours Worked</label> 
+            <input type="number" class="form-control" id="HoursWorked" name="HoursWorked" placeholder="Enter hours worked" style="background-color: #f8f8f8; color: black;" required> 
+        </div>
+
+        <div class="form-group">
+            <label for="HourlyRate" style="color: #ff0000;">Hourly Rate</label> 
+            <input type="number" class="form-control" id="HourlyRate" name="HourlyRate" placeholder="Enter hourly rate" style="background-color: #f8f8f8; color: black;" required> 
+        </div>
+
+        <div class="form-group">
+            <label for="Notes" style="color: #ff0000;">Additional Notes</label> 
+            <textarea class="form-control" id="Notes" name="Notes" rows="3" placeholder="Add additional notes" style="background-color: #f8f8f8; color: black;"></textarea> 
+        </div>
+        <br />
+        <br />
+        <div class="form-group">
+            <label for="SupportingDoc">Upload Supporting Document</label>
+            <input type="file" class="form-control" id="SupportingDoc" name="SupportingDoc" accept=".pdf,.docx,.xlsx" />
+        </div>
+
+        <button type="submit" style="color: #ff0000;" class="btn btn-primary btn-lg">Submit</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('SupportingDoc').addEventListener('change', function () {
+            var fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.getElementById('file-name-display').innerText = fileName;
+        });
+    </script>
 }
-
-<h1>@ViewData["Title"]</h1>
-
-<form asp-action="Submit" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="Month" class="control-label"></label>
-        <input asp-for="Month" class="form-control" />
-        <span asp-validation-for="Month" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Year" class="control-label"></label>
-        <input asp-for="Year" class="form-control" />
-        <span asp-validation-for="Year" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="HoursWorked" class="control-label"></label>
-        <input asp-for="HoursWorked" class="form-control" />
-        <span asp-validation-for="HoursWorked" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TotalAmount" class="control-label"></label>
-        <input asp-for="TotalAmount" class="form-control" />
-        <span asp-validation-for="TotalAmount" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Status" class="control-label"></label>
-        <input asp-for="Status" class="form-control" />
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ContractID" class="control-label"></label>
-        <input asp-for="ContractID" class="form-control" />
-        <span asp-validation-for="ContractID" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="SupportingDocs">Supporting Documents</label>
-        <input type="file" name="SupportingDocs" id="SupportingDocs" multiple />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>

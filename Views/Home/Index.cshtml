@@ -1,1 +1,48 @@
-﻿
+﻿@model IEnumerable<CMCS.Models.Claim> 
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Welcome to the Contract Monthly Claim System</h1>
+<p>This is a claims management system for independent contractors.</p>
+
+<h2>Your Claims</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Claim ID</th>
+            <th>File Name</th>
+            <th>Status</th>
+            <th>Submitted Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                <td>@claim.ClaimID</td>
+                <td>@claim.FileName</td>
+                <td>
+                    <span class="status-label">@claim.Status</span>
+                    <!-- Optionally, you can implement a progress bar here -->
+                </td>
+                <td>@claim.SubmittedDate.ToShortDateString()</td>
+                <td>
+                    @if (claim.Status == "Pending")
+                    {
+                        <form asp-action="ApproveClaim" method="post">
+                            <input type="hidden" name="id" value="@claim.ClaimID" />
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form asp-action="RejectClaim" method="post">
+                            <input type="hidden" name="id" value="@claim.ClaimID" />
+                            <button type="submit">Reject</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

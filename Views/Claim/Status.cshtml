@@ -1,11 +1,11 @@
-﻿@model IEnumerable<CMCS.Models.ClaimStatus>
+﻿@model IEnumerable<CMCS.Models.Claim>
 
 <h2>Your Claims</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Claim Number</th>
+            <th>Claim ID</th>
             <th>Date Submitted</th>
             <th>Status</th>
             <th>Supporting Documents</th>
@@ -15,13 +15,24 @@
         @foreach (var claim in Model)
         {
             <tr>
-                <td>@claim.ClaimNumber</td>
-                <td>@claim.DateSubmitted.ToString("dd/MM/yyyy")</td>
-                <td>@claim.Status</td>
+                <td>@claim.ClaimID</td>
+                <td>@claim.SubmittedDate.ToString("dd/MM/yyyy")</td>
+                <td> Id = "status-claim.ClaimID>@claim.Status</td>
                 <td>
-                    <a href="@Url.Content(claim.SupportingDocumentPath)">View Document</a>
+                    <a href="@Url.Content(claim.SupportingDoc)">View Document</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+
+
+
+
+
+
+}
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

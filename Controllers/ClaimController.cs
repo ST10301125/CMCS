@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using CMCS.Data;
 using CMCS.Models;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.SqlServer;
+using System.Reflection.Metadata;
 
 namespace CMCS.Controllers
 {
     public class ClaimController : Controller
     {
-        private readonly Context _context;
-
-        public ClaimController(Context context)
+        private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
+        public ClaimController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         public IActionResult Index()
         {
@@ -27,90 +31,117 @@ namespace CMCS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(Claim claim)
+        public async Task<IActionResult> Submit(Claim model)
         {
             if (ModelState.IsValid)
             {
-                claim.Status = "Pending";
+                var claim = new Claim
+                {
+                    HoursWorked = model.HoursWorked,
+                    HourlyRate = model.HourlyRate,
+                    Notes = model.Notes,
+                    SubmittedDate = DateTime.Now,
+                    Status = "Pending"
+                };
+
                 _context.Claims.Add(claim);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("SubmissionReceived");
             }
-            return View(claim);
+            return View(model);
         }
 
-        // Details
-        public async Task<IActionResult> Details(int Id)
+        // Pending
+        public IActionResult Pending()
         {
-            var claim = await _context.Claims.FindAsync(Id);
-            if (claim == null)
-            {
-                return NotFound();
-            }
-
-            var documents = _context.SupportingDocs.Where(d => d.ClaimID == Id).ToList();
-            ViewBag.Documents = documents;
-
-            return View(claim);
+            var pendingClaims = _context.Claims.Where(c => c.Status == "Pending").ToList();
+            return View(pendingClaims);
         }
 
         // Approve
-        public async Task<IActionResult> Approve(int id)
+        [HttpPost]
+        public async Task<IActionResult> Approve(int ClaimID)
         {
-            var claim = await _context.Claims.FindAsync(id);
-            if (claim == null)
+            var claim = await _context.Claims.FindAsync(ClaimID);
+            if (claim! == null)
             {
-                return NotFound();
+                claim.Status = "Approved";
+                await _context.SaveChangesAsync();
             }
-
-            claim.Status = "Approved";
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         // Rejected
-        public async Task<IActionResult> Rejected(int id)
-        {
-            var claim = await _context.Claims.FindAsync(id);
-            if (claim == null)
-            {
-                return NotFound();
-            }
-
-            claim.Status = "Rejected";
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        // UploadDocument
-
         [HttpPost]
-        public async Task<IActionResult> UploadDocument(int claimId, IFormFile file)
+        public async Task<IActionResult> Rejected(int ClaimID)
         {
-            if (file != null && file.Length > 0)
+            var claim = await _context.Claims.FindAsync(ClaimID);
+            if (claim! == null)
             {
-                var filePath = $"wwwroot/uploads/{file.FileName}";
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                var document = new SupportingDocs
-                {
-                    FileName = file.FileName,
-                    FilePath = filePath,
-                    ClaimID = claimId
-                };
-
-                _context.SupportingDocs.Add(document);
+                claim.Status = "Rejected";
                 await _context.SaveChangesAsync();
             }
+            return RedirectToAction("Index");
+        }
 
-            return RedirectToAction(nameof(Details), new { id = claimId });
+        // Upload Document 
+        [HttpPost]
+        public async Task<IActionResult> SubmitClaim(Claim claim, IFormFile SupportingDoc)
+        {
+            if (ModelState.IsValid)
+            {
+                // Handle file upload (if there is a file uploaded)
+                if (SupportingDoc != null)
+                {
+                    if (SupportingDoc.Length > 5 * 1024 * 1024)  // File size limit of 5MB
+                    {
+                        ModelState.AddModelError("FileSize", "File size should not exceed 5MB.");
+                        return View(claim);
+                    }
+
+                    // Restrict file types
+                    var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx" };
+                    var fileExtension = Path.GetExtension(SupportingDoc.FileName).ToLower();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("FileType", "Only .pdf, .docx, and .xlsx files are allowed.");
+                        return View(claim);
+                    }
+
+                    // Save the file to the server
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);  // Ensure the uploads directory exists
+
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}";  // Use a consistent naming convention
+                    var filePath = Path.Combine(uploads, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await SupportingDoc.CopyToAsync(fileStream);
+                    }
+
+                    // Update claim with file details
+                    claim.FileName = SupportingDoc.FileName;
+                    claim.FilePath = fileName;
+                }
+
+                // Set additional claim data
+                claim.Status = "Pending";
+                claim.SubmittedDate = DateTime.Now;
+
+                // Save claim to database
+                _context.Claims.Add(claim);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("PendingClaim");
+            }
+
+            // If model state is invalid, return the form with errors
+            return View(claim);
         }
     }
-}
+    }
 
         
         
