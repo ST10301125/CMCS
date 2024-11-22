@@ -31,7 +31,7 @@ builder.Services.AddSession(options =>
 // Add controllers, views, and Razor pages
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); 
-
+ 
 // Build the app
 var app = builder.Build();
 
