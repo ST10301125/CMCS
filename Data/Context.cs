@@ -8,7 +8,7 @@ namespace CMCS.Data
     { 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-        } 
+        }  
         public DbSet<Lecturer> Lecturer { get; set; }
         public DbSet<Claim> Claims { get; set; } 
         public DbSet<Manager> Manager { get; set; }
