@@ -10,7 +10,7 @@ namespace CMCS.Data
         {
         }
         public DbSet<Lecturer> Lecturer { get; set; }
-        public DbSet<Claim> Claims { get; set; }
+        public DbSet<Claim> Claims { get; set; } 
         public DbSet<Manager> Manager { get; set; }
         public DbSet<User> User { get; set; }
     }
