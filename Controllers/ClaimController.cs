@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using CMCS.Data;
 using CMCS.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.SqlServer;
-using System.Reflection.Metadata;
+using System.Data;
 
 namespace CMCS.Controllers
 {
@@ -21,21 +22,124 @@ namespace CMCS.Controllers
         }
         public IActionResult Index()
         {
-            var claims = _context.Claims.ToList();
-            return View(claims);
+            // Retrieve Role from session
+            var role = HttpContext.Session.GetString("UserRole");
+            
+            if (string.IsNullOrEmpty(role))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            switch (role)
+            {
+                case "Lecturer":
+                    return RedirectToAction("Submit", "Claim");
+                case "Manager":
+                    return RedirectToAction("Pending", "Claim");
+                case "HR":
+                    return RedirectToAction("Index", "HR");
+                default:
+                    // If the role is unrecognized, redirect to the login page
+                    return RedirectToAction("Login", "Login");
+            }
         }
 
+        [HttpGet]
         public IActionResult Submit()
         {
+            // Return the Submit view
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(Claim model)
+        public async Task<IActionResult> Submit(Claim model, IFormFile SupportingDoc)
         {
             if (ModelState.IsValid)
             {
-                var claim = new Claim
+                if (SupportingDoc != null)
+                {
+                    if (SupportingDoc.Length > 5 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("FileSize", "File size should not exceed 5MB.");
+                        return View(model);
+                    }
+
+                    var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx" };
+                    var fileExtension = Path.GetExtension(SupportingDoc.FileName).ToLower();
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("FileType", "Only .pdf, .docx, and .xlsx files are allowed.");
+                        return View(model);
+                    }
+
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                    var filePath = Path.Combine(uploads, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await SupportingDoc.CopyToAsync(fileStream);
+                    }
+
+                    model.FileName = SupportingDoc.FileName;
+                    model.FilePath = fileName;
+                }
+
+                model.Status = "Pending";
+                model.SubmittedDate = DateTime.Now;
+
+                // Save to database
+                _context.Claims.Add(model);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+
+        public IActionResult Pending()
+        {
+            var pendingClaims = _context.Claims.Where(c => c.Status == "Pending").ToList();
+            return View(pendingClaims);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApproveClaim(int id)
+        {
+            var claim = await _context.Claims.FindAsync(id);
+            if (claim != null)
+            {
+                claim.Status = "Approved";
+                claim.ApprovedDate = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Pending");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectClaim(int id)
+        {
+            var claim = await _context.Claims.FindAsync(id);
+            if (claim != null)
+            {
+                claim.Status = "Rejected";
+                claim.RejectedDate = DateTime.Now;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Pending");
+        }
+    }
+}
+
+
+
+
+
+
+
+/*var claim = new Claim
                 {
                     HoursWorked = model.HoursWorked,
                     HourlyRate = model.HourlyRate,
@@ -143,6 +247,6 @@ namespace CMCS.Controllers
     }
     }
 
-        
+ */       
         
         

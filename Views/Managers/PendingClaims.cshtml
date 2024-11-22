@@ -1,0 +1,85 @@
+﻿@model IEnumerable<CMCS.Models.Claim>
+
+<h1>Pending Claims</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Claim ID</th>
+            <th>Lacturer Name</th>
+            <th>Date Submitted</th>
+            <th>Total Amount</th>
+            <th>Description</th>
+            <th>Supporting Document</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                    <td>@claim.ClaimID</td>
+                    <td>@claim.LecturerName</td>
+                    <td>@claim.SubmittedDate.ToShortDateString()</td>
+                    <td>@claim.TotalAmount.ToString("F2")</td>
+                    <td>
+                        @{
+                            var truncatedDescription = claim.Description.Length > 20
+                                ? claim.Description.Substring(0, 20) + "..."
+                                : claim.Description;
+                        }
+                        @truncatedDescription
+                    </td>
+                    <td>
+                        @foreach (var doc in claim.SupportingDoc)
+                        {
+                            var fileHref = Url.Content("~/" + claim.FilePath);
+                            <a href="@fileHref" class="text-decoration-none" target="_blank">
+                                @claim.FileName
+                                @if (doc != claim.SupportingDoc.Last()) { <span>, </span> }
+                            </a>
+                        }
+                    </td>
+                    <td>
+						<span class="badge @(claim.Status.ToString() == "Approved" ? "bg-success text-dark" : claim.Status.ToString() == "Pending" ? "bg-warning text-dark" : "bg-danger text-dark")">
+                            @claim.Status
+                        </span>
+                    </td>
+                    <td>
+                    <a href="@Url.Action("ClaimDetails", new { id = claim.ClaimID })" class="btn btn-info btn-sm">View</a>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#approveModal-@claim.ClaimID">Approve</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#rejectModal-@claim.ClaimID">Reject</button>
+                    </td>
+                </tr>
+
+            <!-- Modal for rejecting claim -->
+            <div class="modal fade" id="rejectModal-@claim.ClaimID" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel-@claim.ClaimID" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="rejectModalLabel-@claim.ClaimID">Reject Claim @claim.ClaimID</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-action="RejectClaim" method="post">
+                                <input type="hidden" name="claimId" value="@claim.ClaimID" />
+                                <div class="form-group">
+                                    <label for="RejectionReason">Rejection Reason:</label>
+                                    <textarea id="RejectionReason" name="rejectionReason" class="form-control" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">Reject Claim</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </tbody>
+</table>
+

@@ -1,8 +1,9 @@
-﻿@model CMCS.Models.Claim
+﻿@model Claim
 
 <div class="claim-form">
     <h2 style="color: #ff0000;">Submit Your Claim</h2> 
     <form asp-action="SubmitClaim" asp-controller="ClaimController" method="post" enctype="multipart/form-data" style="background-color: #fff; padding: 20px; border-radius: 8px;">
+        
         <div class="form-group">
             <label for="HoursWorked" style="color: #ff0000;">Hours Worked</label> 
             <input type="number" class="form-control" id="HoursWorked" name="HoursWorked" placeholder="Enter hours worked" style="background-color: #f8f8f8; color: black;" required> 
@@ -19,9 +20,26 @@
         </div>
         <br />
         <br />
+        
         <div class="form-group">
             <label for="SupportingDoc">Upload Supporting Document</label>
             <input type="file" class="form-control" id="SupportingDoc" name="SupportingDoc" accept=".pdf,.docx,.xlsx" />
+            <div id="file-name-display" style="margin-top: 10px;"></div> <!-- File name display -->
+        </div>
+
+        <div class="form-group">
+            <label for="TotalAmount" style="color: #ff0000;">Total Amount</label>
+            <input type="number" class="form-control" id="TotalAmount" name="TotalAmount" placeholder="Enter total amount" style="background-color: #f8f8f8; color: black;" required min="0" />
+        </div>
+
+        <div class="form-group">
+            <label for="ContractId" style="color: #ff0000;">Contract ID</label>
+            <input type="text" class="form-control" id="ContractId" name="ContractId" placeholder="Enter contract ID" style="background-color: #f8f8f8; color: black;" required />
+        </div>
+
+        <div class="form-group">
+            <label for="AdditionalNotes" style="color: #ff0000;">Additional Notes</label>
+            <textarea class="form-control" id="AdditionalNotes" name="AdditionalNotes" rows="3" placeholder="Enter additional notes" style="background-color: #f8f8f8; color: black;"></textarea>
         </div>
 
         <button type="submit" style="color: #ff0000;" class="btn btn-primary btn-lg">Submit</button>

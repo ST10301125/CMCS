@@ -1,0 +1,56 @@
+﻿@page
+@model HRModel
+@{
+    ViewData["Title"] = "HR Dashboard";
+}
+
+<h1>HR Dashboard</h1>
+
+<!-- List of Lecturers -->
+<section>
+    <h2>Lecturers List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Lecturer ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lecturer in Model.Lecturers)
+            {
+                <tr>
+                    <td>@lecturer.LecturerID</td>
+                    <td>@lecturer.FirstName @lecturer.LastName</td>
+                    <td>@lecturer.Email</td>
+                    <td>@lecturer.Department</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<!-- Report Generation -->
+<section>
+    <h2>Generate Reports</h2>
+    <form method="post" asp-page-handler="GenerateReport">
+        <div class="form-group">
+            <label for="reportType">Select Report Type:</label>
+            <select id="reportType" name="reportType" class="form-control">
+                <option value="Attendance">Attendance</option>
+                <option value="Performance">Performance</option>
+                <option value="Claims">Claims</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+    </form>
+    <div>
+        @if (!string.IsNullOrEmpty(Model.GenerateReport))
+        {
+            <h3>Generated Report</h3>
+            <pre>@Model.GenerateReport</pre>
+        }
+    </div>
+</section>

@@ -1,48 +1,32 @@
-﻿@model IEnumerable<CMCS.Models.Claim> 
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
-<h1>Welcome to the Contract Monthly Claim System</h1>
-<p>This is a claims management system for independent contractors.</p>
+<div class="text-center mb-3">
+	<h1 class="display-4">Welcome to the Contract Monthly Claim System</h1>
+</div>
 
-<h2>Your Claims</h2>
+<main class="container mt-2">
+	<div class="p-5 bg-light rounded shadow-sm">
+		<section class="mb-4">
+			<p class="lead">This is a Claims Management System for Independent Contractors, simplifying the process of submitting and approving monthly claims.</p>
+		</section>
 
-<table>
-    <thead>
-        <tr>
-            <th>Claim ID</th>
-            <th>File Name</th>
-            <th>Status</th>
-            <th>Submitted Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var claim in Model)
-        {
-            <tr>
-                <td>@claim.ClaimID</td>
-                <td>@claim.FileName</td>
-                <td>
-                    <span class="status-label">@claim.Status</span>
-                    <!-- Optionally, you can implement a progress bar here -->
-                </td>
-                <td>@claim.SubmittedDate.ToShortDateString()</td>
-                <td>
-                    @if (claim.Status == "Pending")
-                    {
-                        <form asp-action="ApproveClaim" method="post">
-                            <input type="hidden" name="id" value="@claim.ClaimID" />
-                            <button type="submit">Approve</button>
-                        </form>
-                        <form asp-action="RejectClaim" method="post">
-                            <input type="hidden" name="id" value="@claim.ClaimID" />
-                            <button type="submit">Reject</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+		<section class="mb-4">
+			<h2 class="h3">Key Features</h2>
+			<ul class="list-group">
+				<li class="list-group-item">Submit your Claims Easily</li>
+				<li class="list-group-item">Uploading Supporting Documents</li>
+				<li class="list-group-item">Managing Pending Claims</li>
+				<li class="list-group-item">Status Updates and Notifications</li>
+			</ul>
+		</section>
+
+		<div class="text-center">
+			<a href="@Url.Action("Login", "Login")" class="btn btn-primary">Login</a>
+		</div>
+
+	</div>
+</main>
+
+
